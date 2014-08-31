@@ -1,8 +1,10 @@
 var gs = require('edit-google-spreadsheet');
 var creds = require('./creds.json');
+var norm = require('./normalizeChars.js')
 
-var fieldNames = ['timestamp', 'username', 'location', 'attendance', 'lastName', 'firstName', 'dob', 'knowledgeLevel', 'knoledgeTecs', 'workExperience', 'emailBeeva', 'emailBbva', 'doi'];
+var fieldNames = ['timestamp', 'username', 'location', 'attendance', 'lastName', 'firstName', 'dob', 'knowledgeLevel', 'knowledgeTecs', 'workExperience', 'emailBeeva', 'emailBbva', 'doi'];
 
+console.log(norm.normalize('holaáéíóú éí_'));
 
 gs.load({
 	    debug: true,

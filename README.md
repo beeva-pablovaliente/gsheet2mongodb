@@ -25,3 +25,10 @@ To retrieve a token, we will need the available scopes list to request for autho
 In this case we are only going to need the Scopes from Google Drive API, so we can review the list from here:
 https://developers.google.com/drive/web/scopes
 
+# Credits #
+
+Library to Access Google SpreadSheet:
+https://github.com/jpillora/node-edit-google-spreadsheet
+
+Example:
+http://www.nczonline.net/blog/2014/03/04/accessing-google-spreadsheets-from-node-js/
