@@ -2,7 +2,7 @@
 
 It is necessary to set the next parameters into the creds.json file:
 
-1- spreadSheetId : SpreadSheet Identifier from Google. We can get this parameter when we share the SpreadSheet. This parameter comes in the URL
+1- spreadSheetId : SpreadSheet Identifier from Google. We can get this parameter when we share the SpreadSheet. This parameter appears in the URL
 2- workSheetName : The name of the sheet we want to read data from
 3- token : Token obtained from Google
 
@@ -16,4 +16,12 @@ To obtain these parameters we have to log into Google Developer Console (https:/
 navigate to APIs & Auth --> Credentials
 Next, We have to create a new Client ID --> Web application
 
-To follow the OAuth2.0 flow, we can use the documentation from here: https://developers.google.com/accounts/docs/OAuth2WebServer
+To follow the OAuth2.0 flow, we can use the documentation from here:
+https://developers.google.com/accounts/docs/OAuth2WebServer
+
+# Scopes #
+
+To retrieve a token, we will need the available scopes list to request for authorization.
+In this case we are only going to need the Scopes from Google Drive API, so we can review the list from here:
+https://developers.google.com/drive/web/scopes
+
