@@ -19,6 +19,9 @@ Next, We have to create a new Client ID --> Web application
 To follow the OAuth2.0 flow, we can use the documentation from here:
 https://developers.google.com/accounts/docs/OAuth2WebServer
 
+Auth Endpoint:
+https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/drive.readonly&response_type=code&redirect_uri=https://www.example.com/oauth2callback&client_id=<clientId>
+
 # Scopes #
 
 To retrieve a token, we will need the available scopes list to request for authorization.
