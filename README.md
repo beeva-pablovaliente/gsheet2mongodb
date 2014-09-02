@@ -15,12 +15,15 @@ We can get the Token from Google OAuth 2.0 Protocol. We will need two parameters
 
 To obtain these parameters we have to log into [Google Developer Console](https://console.developers.google.com),
 and navigate to APIs & Auth --> Credentials
+
 Next, We have to create a new Client ID --> Web application
+
 
 To follow the OAuth2.0 flow, we can use the documentation from here:
 https://developers.google.com/accounts/docs/OAuth2WebServer
 
 Example Request to Auth Endpoint:
+
 https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/drive.readonly&response_type=code&redirect_uri=https://www.example.com/oauth2callback&client_id=<clientId>
 
 # Scopes #
