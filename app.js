@@ -1,26 +1,14 @@
 var gs = require('edit-google-spreadsheet');
+var MongoClient = require('mongodb').MongoClient;
+
 var creds = require('./creds.json');
-var norm = require('./normalizeChars.js')
-
-var fieldNames = ['timestamp', 'username', 'location', 'attendance', 'lastName', 'firstName', 'dob', 'knowledgeLevel', 'knowledgeTecs', 'workExperience', 'emailBeeva', 'emailBbva', 'doi'];
-
-console.log(norm.normalize('holaáéíóú éí_'));
+var norm = require('./normalizeChars.js');
 
 gs.load({
 	    debug: true,
-	    spreadsheetId: creds.spreadSheetId, //Nombre de la hoja de calculo
-	    //worksheetId: 'o67dbkn', //Nombre de la 
-	    worksheetName: creds.workSheetName,
-	    // Choose from 1 of the 3 authentication methods:
-	    //    1. Username and Password
-	    //username: 'my-name@google.email.com',
-	    //password: 'my-5uper-t0p-secret-password',
-	    // OR 2. OAuth
-	    //oauth : {
-	    //  email: 'my-name@google.email.com',
-	    //  keyFile: 'my-private-key.pem'
-	    //},
-	    // OR 3. Token
+	    spreadsheetId: creds.spreadSheetId, //ID de la hoja de calculo
+	    worksheetName: creds.workSheetName, //Nombre la de hoja
+
 	    accessToken : {
 	      type: 'Bearer',
 	      token: creds.token
@@ -35,7 +23,45 @@ gs.load({
 	    spreadsheet.receive(function(err, rows, info) {
 	        if (err) { throw err; }
 
-	        console.dir(rows);
-	        console.dir(info);
+	        //console.dir(rows);
+	        //console.dir(info);
+
+            MongoClient.connect(creds.dbUrl, function(err, db) {
+
+                if(err) throw err;
+
+                //Calculate the number of rows returned: The first row will have the name of the columns
+                var numRows = Object.keys(rows).length;
+                var i = 1;
+
+                //Calulate the number of columns from the first row
+                var colLength = Object.keys(rows[1]).length;
+                var c = 1;
+
+                //Documents Array
+                var docs = new Array();
+
+                for (i = 2; i <= numRows; i++) {//Skip the first row
+                    //For each Row, we build a document
+                    var doc = {};
+                    for (c = 1; c <= colLength; c++) {
+                        var nameCol = rows[1][c]; //Extract the name from the first column always
+                        var valueCol = rows[i][c];
+
+                        doc[norm.normalize(nameCol)] = valueCol;
+                    }
+                    docs.push(doc);
+                }
+
+                //Insert into mongodb
+                db.collection(creds.collectionName).insert(docs, function(err, inserted) {
+                    if(err) throw err;
+
+                    console.dir("Successfully inserted: " + JSON.stringify(inserted));
+
+                    return db.close();
+                });
+
+            });
 	    });
 	});
