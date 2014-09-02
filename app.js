@@ -1,5 +1,8 @@
 var gs = require('edit-google-spreadsheet');
 var MongoClient = require('mongodb').MongoClient;
+var express = require('express');
+var app = express();
+
 
 var creds = require('./creds.json');
 var norm = require('./normalizeChars.js');
