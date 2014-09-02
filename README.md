@@ -4,7 +4,9 @@ It is necessary to set the next parameters into the creds.json file:
 
 1. spreadSheetId : SpreadSheet Identifier from Google. We can get this parameter when we share the SpreadSheet. This parameter appears in the URL
 2. workSheetName : The name of the sheet we want to read data from
-3. token : Token obtained from Google
+3. token : Token obtained from Google throughout OAuth 2.0 protocol
+4. dbUrl: URL where the MongoDB Database is located
+5. collectionName: Name of the collection where We want to store the documents
 
 # Obtain Token from Google #
 
