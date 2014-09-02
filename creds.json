@@ -1,7 +1,7 @@
 {
-
 	"token" : "...",
 	"spreadSheetId" : "...",
-	"workSheetName" : "..."
-
+	"workSheetName" : "...",
+	"dbUrl" : "...",
+	"collectionName": "..."
 }
