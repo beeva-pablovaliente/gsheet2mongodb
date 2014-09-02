@@ -2,8 +2,10 @@ exports.normalize = function (string){
     var res = '';
     var i=0;
 
-    for (i = 0; i < string.length ; i++){
-        res += replaceChar(string[i]);
+    var toLower = string.toLowerCase();
+
+    for (i = 0; i < toLower.length ; i++){
+        res += replaceChar(toLower[i]);
     }
 
     return res;
@@ -17,6 +19,9 @@ function replaceChar(char){
         case 'ó': return 'o';
         case 'ú': return 'u';
         case ' ': return '_';
+        case 'ñ': return 'n';
+        case '@': return '';
+        case '.': return '_';
         default: return char;
     }
 }
