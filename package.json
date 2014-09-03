@@ -1,0 +1,29 @@
+{
+  "name": "gsheet2mongodb",
+  "version": "0.0.1",
+  "description": "Google Sheet To MongoDB",
+  "main": "app.js",
+  "dependencies": {
+    "edit-google-spreadsheet": "~0.2.7",
+    "mongodb": "~1.4.9",
+    "express": "~4.8.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rekkeb/gsheet2mongodb.git"
+  },
+  "keywords": [
+    "spreadsheet",
+    "mongodb",
+    "google",
+    "oauth"
+  ],
+  "author": "rekkeb",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "e063991def7c562bd394d4ceecf5f8e9cefca3fb"
+}
