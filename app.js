@@ -1,12 +1,35 @@
+//Requireds
 var gs = require('edit-google-spreadsheet');
 var MongoClient = require('mongodb').MongoClient;
 var express = require('express');
 var app = express();
-
+var http = require('http');
+var swig = require('swig'), path = require('path');
 
 var creds = require('./creds.json');
 var norm = require('./normalizeChars.js');
 
+//Vars
+var port = 8081;
+
+// Register our templating engine
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+
+//Public resources
+app.use(express.static(path.join(__dirname + '/public')));
+
+// To disable Swig's cache, do the following:
+app.set('view cache', false);
+swig.setDefaults({ cache: false });
+
+//Start Express Server
+var server = http.createServer(app);
+server.listen(port, function(){
+    console.log('Listening on port %d', server.address().port);
+});
+
+/*
 gs.load({
 	    debug: true,
 	    spreadsheetId: creds.spreadSheetId, //ID de la hoja de calculo
@@ -68,3 +91,4 @@ gs.load({
             });
 	    });
 	});
+*/
