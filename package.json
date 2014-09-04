@@ -6,7 +6,8 @@
   "dependencies": {
     "edit-google-spreadsheet": "~0.2.7",
     "mongodb": "~1.4.9",
-    "express": "~4.8.7"
+    "express": "~4.8.7",
+    "swig": "~1.4.2"
   },
   "devDependencies": {},
   "scripts": {
