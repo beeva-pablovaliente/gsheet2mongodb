@@ -8,7 +8,8 @@
     "mongodb": "~1.4.9",
     "express": "~4.8.7",
     "swig": "~1.4.2",
-    "restify": "~2.8.2"
+    "restify": "~2.8.2",
+    "body-parser": "~1.7.0"
   },
   "devDependencies": {},
   "scripts": {

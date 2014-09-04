@@ -1,10 +1,13 @@
 //Requireds
 var gs = require('edit-google-spreadsheet');
-var MongoClient = require('mongodb').MongoClient;
-var express = require('express');
-var app = express();
-var http = require('http');
-var swig = require('swig'), path = require('path');
+    MongoClient = require('mongodb').MongoClient,
+    express = require('express'),
+    app = express(),
+    bodyParser = require('body-parser'),
+    http = require('http'),
+    swig = require('swig'),
+    path = require('path'),
+    restify = require('restify');
 
 var creds = require('./creds.json');
 var norm = require('./normalizeChars.js');
@@ -16,28 +19,77 @@ var port = 8081;
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 
+//Set the directory for the views
+app.set('views', __dirname + '/public/views');
+
 //Public resources
 app.use(express.static(path.join(__dirname + '/public')));
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 
 // To disable Swig's cache, do the following:
 app.set('view cache', false);
 swig.setDefaults({ cache: false });
 
-//Start Express Server
-var server = http.createServer(app);
-server.listen(port, function(){
-    console.log('Listening on port %d', server.address().port);
+app.route('/').get(function(req, res){
+    res.render('index', {clientId : creds.clientId, redirectUri: creds.redirectUri});
 });
 
-/*
-gs.load({
+app.route('/oauth2callback').get(function(req, res){
+    //Request for token
+
+    var resRoute = res;
+    //Extract code parameter from the Query
+    console.log('Code Obtained: ' + req.query.code);
+
+    // Creates a String client
+    var client = restify.createStringClient({
+        url: 'https://accounts.google.com',
+        headers : {
+            accept : 'application/json'
+        }
+    });
+
+    var postBody = {
+        code : req.query.code,
+        client_id : creds.clientId,
+        client_secret : creds.clientSecret,
+        redirect_uri : creds.redirectUri,
+        grant_type : "authorization_code"
+    };
+
+    client.post('/o/oauth2/token', postBody, function(err, req, res, data) {
+
+        var rend = {token : null};
+
+        if (err) {
+            console.log(err);
+        }else{
+            console.log('%d -> %j', res.statusCode, res.headers);
+            console.log('%s', data);
+
+            if (res.statusCode == 200 && res.headers['content-type'].indexOf('application/json') >= 0){
+                rend['token'] = JSON.parse(data).access_token;
+            }
+        }
+
+        resRoute.render('index', rend);
+    });
+});
+
+app.route('/mongodb').post(function(req, res){
+
+    var resRoute = res;
+
+    gs.load({
 	    debug: true,
 	    spreadsheetId: creds.spreadSheetId, //ID de la hoja de calculo
 	    worksheetName: creds.workSheetName, //Nombre la de hoja
 
 	    accessToken : {
 	      type: 'Bearer',
-	      token: creds.token
+	      token: req.body.token //creds.token
 	    }
 	}, 
 	function sheetReady(err, spreadsheet) {
@@ -85,10 +137,18 @@ gs.load({
 
                     console.dir("Successfully inserted: " + JSON.stringify(inserted));
 
+                    resRoute.send(inserted);
+
                     return db.close();
                 });
 
             });
 	    });
 	});
-*/
+});
+
+//Start Express Server
+var server = http.createServer(app);
+server.listen(port, function(){
+    console.log('Listening on port %d', server.address().port);
+});

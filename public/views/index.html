@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>G2MongoDB</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <!-- Cover Theme -->
+    <link href="../css/cover.css" rel="stylesheet">
+</head>
+    <body>
+        <div class="site-wrapper">
+            <div class="site-wrapper-inner">
+                <div class="cover-container">
+                    <div class="masthead clearfix">
+                        <div class="inner">
+                            <h1>Request OAuth2 Token</h1>
+                            <!--<h3 class="masthead-brand">Cover</h3>
+                            <ul class="nav masthead-nav">
+                                <li class="active"><a href="#">Home</a></li>
+                                <li><a href="#">Features</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>-->
+                        </div>
+                    </div>
+
+                    <div class="inner cover">
+                        <h1 class="cover-heading"></h1>
+
+                        <p class="lead">Here you can request for an Authorization Token to export your Google SpreadSheet to MongoDB</p>
+
+                        <p class="lead">
+                            {% if token %}
+                                <a id="populateMongoDB" href="#" class="btn btn-lg btn-default" data-token="{{token}}">Populate MongoDB</a>
+                            {% else %}
+                                <input id="clientId" type="text" class="form-control" placeholder="ClientId" required="" autofocus="" value="{{clientId}}">
+                                <!--<input type="password" class="form-control" placeholder="ClientSecret" required="" autofocus="">-->
+                                <input id="redirectUri" type="text" class="form-control" placeholder="RedirectUri" required="" autofocus="" value="{{redirectUri}}">
+                                <a id="requestButton" href="#" class="btn btn-lg btn-default">Request Token</a>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="mastfoot">
+                        <div class="inner">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="../js/jquery-1.11.1.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="../js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function(){
+                jQuery('#requestButton').click(function(evt){
+                    evt.preventDefault();
+
+                    var scope = 'scope=https://www.googleapis.com/auth/drive.readonly';
+                    var responseType = '&response_type=code';
+                    var clientId = '&client_id='+jQuery('#clientId').val();
+                    var redirectUri = '&redirect_uri='+jQuery('#redirectUri').val();
+                    window.location.href = 'https://accounts.google.com/o/oauth2/auth?'+scope+responseType+clientId+redirectUri;
+                });
+
+                jQuery('#populateMongoDB').click(function(evt) {
+                    evt.preventDefault();
+
+                    var t = {token : jQuery(this).data('token')};
+
+                    jQuery.ajax(
+                            {
+                                url : '/mongodb',
+                                type : 'POST',
+                                contentType : 'application/json',
+                                dataType : 'json',
+                                processData : false,
+                                data : JSON.stringify(t)
+                            }
+                    )
+                          .done(function (data){
+                            console.log(data);
+                          })
+                          .fail(function( jqXHR, textStatus, errorThrown ) {
+                            console.log("ERROR");
+                          })
+                    ;
+
+                });
+            });
+        </script>
+    </body>
+</html>
