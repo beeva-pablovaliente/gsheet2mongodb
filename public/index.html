@@ -1,82 +1,20 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head>
-	<title>WebSocket Echo Client</title> 
-	<meta charset="UTF-8" /> 
-	<script>
-		"use strict"; 
-		// Initialize everything when the window finishes loading 
-		window.addEventListener("load", function(event) {
-			var status = document.getElementById("status"); 
-			var open = document.getElementById("open"); 
-			var close = document.getElementById("close"); 
-			var send = document.getElementById("send");
-			var text = document.getElementById("text"); 
-			var message = document.getElementById("message"); 
-			var socket;
-			status.textContent = "Not Connected"; 
-			close.disabled = true; 
-			send.disabled = true;
-		
-			// Create a new connection when the Connect button is clicked 
-			open.addEventListener("click", function(event) {
-				open.disabled = true; 
-				
-				socket = new WebSocket("ws://localhost:8081");
-				
-				socket.addEventListener("open", function(event) { 
-					close.disabled = false; 
-					send.disabled = false; 
-					status.textContent = "Connected";
-				});
-				
-				// Display messages received from the server 
-				socket.addEventListener("message", function(event) {
-					//message.textContent = "Server Says: " + event.data;
-					var d = new Date();
-					var timestamp = d.getHours() +':'+ d.getMinutes() +':'+ d.getSeconds() +' - '+d.getUTCDate()+'/'+(1+d.getUTCMonth())+'/'+d.getFullYear();
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap 101 Template</title>
 
-					var para = document.createElement("p");
-					var node = document.createTextNode("Server Says ("+timestamp+"): " + event.data);
-					para.appendChild(node);
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <h1>Hello, world!</h1>
 
-					message.appendChild(para);
-				});
-				
-				// Display any errors that occur 
-				socket.addEventListener("error", function(event) {
-					message.textContent = "Error: " + JSON.stringify(event); 
-				});
-				
-				socket.addEventListener("close", function(event) { 
-					open.disabled = false; 
-					status.textContent = "Not Connected";
-				}); 
-			});
-
-			// Close the connection when the Disconnect button is clicked 
-			close.addEventListener("click", function(event) {
-				close.disabled = true; 
-				send.disabled = true; 
-				message.textContent = ""; 
-				socket.close();
-			});
-
-			// Send text to the server when the Send button is clicked 
-			send.addEventListener("click", function(event) {
-				socket.send(text.value);
-				text.value = ""; 
-			});
-		}); 
-	</script>
-</head> 
-<body>
-	Status: <span id="status"></span><br /> 
-	<input id="open" type="button" value="Connect" />&nbsp; 
-	<input id="close" type="button" value="Disconnect" /><br /> 
-	<input id="send" type="button" value="Send" />&nbsp; 
-	<input id="text" /><br /> 
-	
-	<span id="message"></span>
-</body> 
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="js/jquery-1.11.1.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="js/bootstrap.min.js"></script>
+    </body>
 </html>
