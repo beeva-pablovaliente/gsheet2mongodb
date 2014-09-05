@@ -1,7 +1,10 @@
 {
-	"token" : "...",
-	"spreadSheetId" : "...",
-	"workSheetName" : "...",
-	"dbUrl" : "...",
-	"collectionName": "..."
+    "token" : "",
+    "spreadSheetId" : "...",
+    "workSheetName" : "...",
+    "dbUrl" : "...",
+    "collectionName": "...",
+    "clientId":"...",
+    "clientSecret":"...",
+    "redirectUri":"..."
 }
