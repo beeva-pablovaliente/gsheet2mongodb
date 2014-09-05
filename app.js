@@ -119,6 +119,8 @@ app.route('/mongodb').post(function(req, res){
                 //Documents Array
                 var docs = new Array();
 
+                var countCloseDb = numRows - 1;
+
                 for (i = 2; i <= numRows; i++) {//Skip the first row
                     //For each Row, we build a document
                     var doc = {};
@@ -128,19 +130,34 @@ app.route('/mongodb').post(function(req, res){
 
                         doc[norm.normalize(nameCol)] = valueCol;
                     }
-                    docs.push(doc);
+                    //docs.push(doc);
+
+                    db.collection(creds.collectionName).findAndModify({"nombre_de_usuario" : doc["nombre_de_usuario"]},[['_id','asc']], {"$set" : doc}, {"upsert":true}, function(err, doc){
+
+                        if (!err){
+                            docs.push(doc);
+                            console.dir("Document: " + JSON.stringify(doc));
+                        }
+
+                        countCloseDb--;
+                        if (countCloseDb == 0){
+                            db.close();
+
+                            resRoute.send(docs);
+                        }
+                    });
                 }
 
                 //Insert into mongodb
-                db.collection(creds.collectionName).insert(docs, function(err, inserted) {
+                /*db.collection(creds.collectionName).insert(docs, function(err, inserted) {
                     if(err) throw err;
 
                     console.dir("Successfully inserted: " + JSON.stringify(inserted));
 
-                    resRoute.send(inserted);
-
                     return db.close();
-                });
+
+                    resRoute.send(inserted);
+                });*/
 
             });
 	    });
