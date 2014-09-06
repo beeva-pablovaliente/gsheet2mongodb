@@ -64,7 +64,10 @@ app.route('/oauth2callback').get(function(req, res){
         var rend = {token : null};
 
         if (err) {
-            console.log(err);
+            console.error(err);
+            rend = {error : {}};
+            rend['error']['statusCode'] = err.statusCode;
+            rend['error']['message'] = err.message;
         }else{
             console.log('%d -> %j', res.statusCode, res.headers);
             console.log('%s', data);
@@ -132,7 +135,10 @@ app.route('/mongodb').post(function(req, res){
                     }
                     //docs.push(doc);
 
-                    db.collection(creds.collectionName).findAndModify({"nombre_de_usuario" : doc["nombre_de_usuario"]},[['_id','asc']], {"$set" : doc}, {"upsert":true}, function(err, doc){
+                    //Key to reference the document to update
+                    var key = creds.upsertKey;
+
+                    db.collection(creds.collectionName).findAndModify({ key : doc[key] } ,[['_id','asc']], {"$set" : doc}, {"upsert":true}, function(err, doc){
 
                         if (!err){
                             docs.push(doc);
