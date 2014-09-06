@@ -24,22 +24,31 @@
                                 <li><a href="#">Features</a></li>
                                 <li><a href="#">Contact</a></li>
                             </ul>-->
+                            <div class="row">
+                                <div class="col-sm-4 col-md-4"></div>
+                                <div class="col-sm-4 col-md-4">
+                                        <img src="../images/oauth-2-sm.png" alt="OAuth2.0">
+                                </div>
+                                <div class="col-sm-4 col-md-4"></div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="inner cover">
                         <h1 class="cover-heading"></h1>
 
-                        <p class="lead">Here you can request for an Authorization Token to export your Google SpreadSheet to MongoDB</p>
-
                         <p class="lead">
                             {% if token %}
                                 <a id="populateMongoDB" href="#" class="btn btn-lg btn-default" data-token="{{token}}">Populate MongoDB</a>
+                            {% elseif error %}
+                                <p class="navbar-text"><span class="label label-warning">Status Code: {{error.statusCode}}</span> {{error.message}}</p>
                             {% else %}
+                                <p class="lead">Here you can request for an Authorization Token to export your Google SpreadSheet to MongoDB</p>
                                 <div class="input-group">
                                     <span class="input-group-addon">Redirect Uri</span>
                                     <input id="redirectUri" type="text" class="form-control" placeholder="RedirectUri" required="" autofocus="" value="{{redirectUri}}">
                                 </div>
+                                <br>
                                 <a id="requestButton" href="#" class="btn btn-lg btn-default">Request Token</a>
                             {% endif %}
                         </p>
