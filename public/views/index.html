@@ -36,9 +36,10 @@
                             {% if token %}
                                 <a id="populateMongoDB" href="#" class="btn btn-lg btn-default" data-token="{{token}}">Populate MongoDB</a>
                             {% else %}
-                                <input id="clientId" type="text" class="form-control" placeholder="ClientId" required="" autofocus="" value="{{clientId}}">
-                                <!--<input type="password" class="form-control" placeholder="ClientSecret" required="" autofocus="">-->
-                                <input id="redirectUri" type="text" class="form-control" placeholder="RedirectUri" required="" autofocus="" value="{{redirectUri}}">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Redirect Uri</span>
+                                    <input id="redirectUri" type="text" class="form-control" placeholder="RedirectUri" required="" autofocus="" value="{{redirectUri}}">
+                                </div>
                                 <a id="requestButton" href="#" class="btn btn-lg btn-default">Request Token</a>
                             {% endif %}
                         </p>
@@ -64,7 +65,7 @@
 
                     var scope = 'scope=https://www.googleapis.com/auth/drive.readonly';
                     var responseType = '&response_type=code';
-                    var clientId = '&client_id='+jQuery('#clientId').val();
+                    var clientId = '&client_id={{clientId}}';
                     var redirectUri = '&redirect_uri='+jQuery('#redirectUri').val();
                     window.location.href = 'https://accounts.google.com/o/oauth2/auth?'+scope+responseType+clientId+redirectUri;
                 });
