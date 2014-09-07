@@ -9,7 +9,8 @@
     "express": "~4.8.7",
     "swig": "~1.4.2",
     "restify": "~2.8.2",
-    "body-parser": "~1.7.0"
+    "body-parser": "~1.7.0",
+    "express-session": "~1.7.6"
   },
   "devDependencies": {},
   "scripts": {

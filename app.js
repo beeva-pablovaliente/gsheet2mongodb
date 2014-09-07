@@ -9,6 +9,8 @@ var gs = require('edit-google-spreadsheet');
     path = require('path'),
     restify = require('restify');
 
+var session = require('express-session');
+
 var creds = require('./creds.json');
 var norm = require('./normalizeChars.js');
 
@@ -22,6 +24,13 @@ app.set('view engine', 'html');
 //Set the directory for the views
 app.set('views', __dirname + '/public/views');
 
+// Populates req.session
+app.use(session({
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    secret: 'keyboard cat'
+}));
+
 //Public resources
 app.use(express.static(path.join(__dirname + '/public')));
 
@@ -33,6 +42,10 @@ app.set('view cache', false);
 swig.setDefaults({ cache: false });
 
 app.route('/').get(function(req, res){
+    req.session.views = req.session.views || 0;
+
+    console.log(++req.session.views);
+
     res.render('index', {clientId : creds.clientId, redirectUri: creds.redirectUri});
 });
 
@@ -120,7 +133,7 @@ app.route('/mongodb').post(function(req, res){
                 var c = 1;
 
                 //Documents Array
-                var docs = new Array();
+                var docs = [];
 
                 var countCloseDb = numRows - 1;
 

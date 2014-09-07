@@ -39,5 +39,8 @@ https://developers.google.com/drive/web/scopes
 Library to Access Google SpreadSheet:
 https://github.com/jpillora/node-edit-google-spreadsheet
 
+Express-session
+https://github.com/expressjs/session
+
 Example:
 http://www.nczonline.net/blog/2014/03/04/accessing-google-spreadsheets-from-node-js/
