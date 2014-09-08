@@ -149,9 +149,10 @@ app.route('/mongodb').post(function(req, res){
                     //docs.push(doc);
 
                     //Key to reference the document to update
-                    var key = creds.upsertKey;
+                    var docToUpsert = {};
+                    docToUpsert[creds.upsertKey] = doc[creds.upsertKey];
 
-                    db.collection(creds.collectionName).findAndModify({ key : doc[key] } ,[['_id','asc']], {"$set" : doc}, {"upsert":true}, function(err, doc){
+                    db.collection(creds.collectionName).findAndModify(docToUpsert ,[['_id','asc']], {"$set" : doc}, {"upsert":true}, function(err, doc){
 
                         if (!err){
                             docs.push(doc);
