@@ -132,77 +132,89 @@ app.route('/mongodb').post(function(req, res){
 	}, 
 	function sheetReady(err, spreadsheet) {
 	    //use speadsheet!
-	    if (err) { throw err; }
+	    if (err) {
+            console.error(err);
+            resRoute.send(err);
+        }
+        else {
+            //console.dir(spreadsheet.raw);
 
-	    //console.dir(spreadsheet.raw);
-
-	    spreadsheet.receive(function(err, rows, info) {
-	        if (err) { throw err; }
-
-	        //console.dir(rows);
-	        //console.dir(info);
-
-            MongoClient.connect(creds.dbUrl, function(err, db) {
-
-                if(err) throw err;
-
-                //Calculate the number of rows returned: The first row will have the name of the columns
-                var numRows = Object.keys(rows).length;
-                var i = 1;
-
-                //Calulate the number of columns from the first row
-                var colLength = Object.keys(rows[1]).length;
-                var c = 1;
-
-                //Documents Array
-                var docs = [];
-
-                var countCloseDb = numRows - 1;
-
-                for (i = 2; i <= numRows; i++) {//Skip the first row
-                    //For each Row, we build a document
-                    var doc = {};
-                    for (c = 1; c <= colLength; c++) {
-                        var nameCol = rows[1][c]; //Extract the name from the first column always
-                        var valueCol = rows[i][c];
-
-                        doc[norm.normalize(nameCol)] = valueCol;
-                    }
-                    //docs.push(doc);
-
-                    //Key to reference the document to update
-                    var docToUpsert = {};
-                    docToUpsert[creds.upsertKey] = doc[creds.upsertKey];
-
-                    db.collection(creds.collectionName).findAndModify(docToUpsert ,[['_id','asc']], {"$set" : doc}, {"upsert":true}, function(err, doc){
-
-                        if (!err){
-                            docs.push(doc);
-                            console.dir("Document: " + JSON.stringify(doc));
-                        }
-
-                        countCloseDb--;
-                        if (countCloseDb == 0){
-                            db.close();
-
-                            resRoute.send(docs);
-                        }
-                    });
+            spreadsheet.receive(function (err, rows, info) {
+                if (err) {
+                    console.error(err);
+                    resRoute.send(err);
                 }
 
-                //Insert into mongodb
-                /*db.collection(creds.collectionName).insert(docs, function(err, inserted) {
-                    if(err) throw err;
+                //console.dir(rows);
+                //console.dir(info);
 
-                    console.dir("Successfully inserted: " + JSON.stringify(inserted));
+                MongoClient.connect(creds.dbUrl, function (err, db) {
 
-                    return db.close();
+                    if (err) {
+                        console.error(err);
+                        resRoute.send(err);
+                    }
 
-                    resRoute.send(inserted);
-                });*/
+                    //Calculate the number of rows returned: The first row will have the name of the columns
+                    var numRows = Object.keys(rows).length;
+                    var i = 1;
 
+                    //Calulate the number of columns from the first row
+                    var colLength = Object.keys(rows[1]).length;
+                    var c = 1;
+
+                    //Documents Array
+                    var docs = [];
+
+                    var countCloseDb = numRows - 1;
+
+                    for (i = 2; i <= numRows; i++) {//Skip the first row
+                        //For each Row, we build a document
+                        var doc = {};
+                        for (c = 1; c <= colLength; c++) {
+                            var nameCol = rows[1][c]; //Extract the name from the first column always
+                            var valueCol = rows[i][c];
+
+                            doc[norm.normalize(nameCol)] = valueCol;
+                        }
+                        //docs.push(doc);
+
+                        //Key to reference the document to update
+                        var docToUpsert = {};
+                        docToUpsert[creds.upsertKey] = doc[creds.upsertKey];
+
+                        db.collection(creds.collectionName).findAndModify(docToUpsert, [
+                            ['_id', 'asc']
+                        ], {"$set": doc}, {"upsert": true}, function (err, doc) {
+
+                            if (!err) {
+                                docs.push(doc);
+                                console.dir("Document: " + JSON.stringify(doc));
+                            }
+
+                            countCloseDb--;
+                            if (countCloseDb == 0) {
+                                db.close();
+
+                                resRoute.send(docs);
+                            }
+                        });
+                    }
+
+                    //Insert into mongodb
+                    /*db.collection(creds.collectionName).insert(docs, function(err, inserted) {
+                     if(err) throw err;
+
+                     console.dir("Successfully inserted: " + JSON.stringify(inserted));
+
+                     return db.close();
+
+                     resRoute.send(inserted);
+                     });*/
+
+                });
             });
-	    });
+        } //else
 	});
 });
 
