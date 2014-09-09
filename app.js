@@ -42,19 +42,38 @@ app.set('view cache', false);
 swig.setDefaults({ cache: false });
 
 app.route('/').get(function(req, res){
-    req.session.views = req.session.views || 0;
 
-    console.log(++req.session.views);
+    var oauth = {};
 
-    res.render('index', {clientId : creds.clientId, redirectUri: creds.redirectUri});
+    //Check if we have the OAuth Object in session. Inside this object, We have: Token Object and Error Object
+    if (req.session.oauth){
+
+        oauth = req.session.oauth;
+
+        //Check if we have the token or there was an error
+        if (oauth.token){
+            console.log("Token in session: " + oauth.token);
+        }
+        else if (oauth.error){
+            //Invalidate the session object
+            console.error("An error has ocurred in OAuth. Regenerating Session: " + JSON.stringify(oauth.error));
+            req.session.regenerate(function (err) {
+                if (!err){
+                    console.log("Session regenerated");
+                }
+            } );
+        }
+    }
+
+    res.render('index', {clientId : creds.clientId, redirectUri: creds.redirectUri, oauth: oauth});
 });
 
-app.route('/oauth2callback').get(function(req, res){
+app.route('/oauth2callback').get(function(reqA, res){
     //Request for token
 
     var resRoute = res;
     //Extract code parameter from the Query
-    console.log('Code Obtained: ' + req.query.code);
+    console.log('Code Obtained: ' + reqA.query.code);
 
     // Creates a String client
     var client = restify.createStringClient({
@@ -65,7 +84,7 @@ app.route('/oauth2callback').get(function(req, res){
     });
 
     var postBody = {
-        code : req.query.code,
+        code : reqA.query.code,
         client_id : creds.clientId,
         client_secret : creds.clientSecret,
         redirect_uri : creds.redirectUri,
@@ -74,11 +93,11 @@ app.route('/oauth2callback').get(function(req, res){
 
     client.post('/o/oauth2/token', postBody, function(err, req, res, data) {
 
-        var rend = {token : null};
+        var rend = {token : null, error : null};
 
         if (err) {
             console.error(err);
-            rend = {error : {}};
+            rend['error'] = {};
             rend['error']['statusCode'] = err.statusCode;
             rend['error']['message'] = err.message;
         }else{
@@ -90,7 +109,10 @@ app.route('/oauth2callback').get(function(req, res){
             }
         }
 
-        resRoute.render('index', rend);
+        reqA.session.oauth = rend;
+
+//        resRoute.render('index', rend);
+        resRoute.redirect('/');
     });
 });
 
@@ -105,7 +127,7 @@ app.route('/mongodb').post(function(req, res){
 
 	    accessToken : {
 	      type: 'Bearer',
-	      token: req.body.token //creds.token
+	      token: req.session.oauth ? req.session.oauth.token : ""
 	    }
 	}, 
 	function sheetReady(err, spreadsheet) {

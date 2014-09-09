@@ -38,10 +38,11 @@
                         <h1 class="cover-heading"></h1>
 
                         <p class="lead">
-                            {% if token %}
-                                <a id="populateMongoDB" href="#" class="btn btn-lg btn-default" data-token="{{token}}">Populate MongoDB</a>
-                            {% elseif error %}
-                                <p class="navbar-text"><span class="label label-warning">Status Code: {{error.statusCode}}</span> {{error.message}}</p>
+                            {% if oauth.token %}
+                                <a id="populateMongoDB" href="#" class="btn btn-lg btn-default">Populate MongoDB</a>
+                            {% elseif oauth.error %}
+                                <p class="lead">There was a problem with the OAuth2 protocol</p>
+                                <p class="lead"><span class="label label-warning">Status Code: {{oauth.error.statusCode}}</span> {{oauth.error.message}}</p>
                             {% else %}
                                 <p class="lead">Here you can request for an Authorization Token to export your Google SpreadSheet to MongoDB</p>
                                 <div class="input-group">
@@ -82,16 +83,13 @@
                 jQuery('#populateMongoDB').click(function(evt) {
                     evt.preventDefault();
 
-                    var t = {token : jQuery(this).data('token')};
-
                     jQuery.ajax(
                             {
                                 url : '/mongodb',
                                 type : 'POST',
                                 contentType : 'application/json',
                                 dataType : 'json',
-                                processData : false,
-                                data : JSON.stringify(t)
+                                processData : false
                             }
                     )
                           .done(function (data){
