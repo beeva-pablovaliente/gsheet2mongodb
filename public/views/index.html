@@ -15,42 +15,36 @@
         <div class="site-wrapper">
             <div class="site-wrapper-inner">
                 <div class="cover-container">
-                    <div class="masthead clearfix">
-                        <div class="inner">
-                            <h1>Request OAuth2 Token</h1>
-                            <!--<h3 class="masthead-brand">Cover</h3>
-                            <ul class="nav masthead-nav">
-                                <li class="active"><a href="#">Home</a></li>
-                                <li><a href="#">Features</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>-->
+                    <div class="inner cover">
+                        <h1>Request OAuth2 Token</h1>
+                        <h1 class="cover-heading">
                             <div class="row">
                                 <div class="col-sm-4 col-md-4"></div>
                                 <div class="col-sm-4 col-md-4">
-                                        <img src="../images/oauth-2-sm.png" alt="OAuth2.0">
+                                    <img src="../images/oauth-2-sm.png" alt="OAuth2.0">
                                 </div>
                                 <div class="col-sm-4 col-md-4"></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="inner cover">
-                        <h1 class="cover-heading"></h1>
+                        </h1>
 
                         <p class="lead">
                             {% if oauth.token %}
-                                <a id="populateMongoDB" href="#" class="btn btn-lg btn-default">Populate MongoDB</a>
+                                <a id="populateMongoDB" href="#" class="btn btn-lg btn-default lead">Populate MongoDB</a>
+                                <div id="result" class="lead">
+                                    <pre id="ok" style="display:none;"></pre>
+                                    <pre id="ko" style="display:none;"></pre>
+                                </div>
                             {% elseif oauth.error %}
                                 <p class="lead">There was a problem with the OAuth2 protocol</p>
                                 <p class="lead"><span class="label label-warning">Status Code: {{oauth.error.statusCode}}</span> {{oauth.error.message}}</p>
                             {% else %}
                                 <p class="lead">Here you can request for an Authorization Token to export your Google SpreadSheet to MongoDB</p>
-                                <div class="input-group">
+                                <div class="input-group lead">
                                     <span class="input-group-addon">Redirect Uri</span>
                                     <input id="redirectUri" type="text" class="form-control" placeholder="RedirectUri" required="" autofocus="" value="{{redirectUri}}">
                                 </div>
                                 <br>
-                                <a id="requestButton" href="#" class="btn btn-lg btn-default">Request Token</a>
+                                <a id="requestButton" href="#" class="btn btn-lg btn-default lead">Request Token</a>
                             {% endif %}
                         </p>
                     </div>
@@ -94,11 +88,14 @@
                     )
                           .done(function (data){
                                 console.log(data);
-                                //var $pre = jQuery("<pre>").css('text-align','left').html(JSON.stringify(data, undefined, 2));
-                                //jQuery('.mastfoot').find('.inner').append($pre);
+                                jQuery("pre#ok").show();
+                                jQuery("pre#ko").hide();
+                                jQuery("pre#ok").css('text-align','left').html(JSON.stringify(data, undefined, 2));
                           })
                           .fail(function( jqXHR, textStatus, errorThrown ) {
-                            console.log("ERROR");
+                                jQuery("pre#ok").hide();
+                                jQuery("pre#ko").show();
+                                jQuery("pre#ko").css({'text-align':'center', 'color':'red'}).html(jqXHR.responseJSON.error);
                           })
                     ;
 
