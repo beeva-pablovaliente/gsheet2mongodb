@@ -21,7 +21,7 @@
                             <div class="row">
                                 <div class="col-sm-4 col-md-4"></div>
                                 <div class="col-sm-4 col-md-4">
-                                    <img src="../images/oauth-2-sm.png" alt="OAuth2.0">
+                                    <img src="../images/oauth-2-sm.png" alt="OAuth2.0" />
                                 </div>
                                 <div class="col-sm-4 col-md-4"></div>
                             </div>
@@ -29,7 +29,15 @@
 
                         <p class="lead">
                             {% if oauth.token %}
-                                <a id="populateMongoDB" href="#" class="btn btn-lg btn-default lead">Populate MongoDB</a>
+                                <div class="row lead">
+                                    <div class="col-sm-4 col-md-4"></div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <a id="populateMongoDB" href="#" class="btn btn-lg btn-default lead">Populate MongoDB</a>
+                                    </div>
+                                    <div class="col-sm-4 col-md-4" style="width:3em; top:5px;">
+                                        <img id="imgLoader" src="../images/ajax-loader.gif" alt="loader" style="display:none;"/>
+                                    </div>
+                                </div>
                                 <div id="result" class="lead">
                                     <pre id="ok" style="display:none;"></pre>
                                     <pre id="ko" style="display:none;"></pre>
@@ -77,13 +85,19 @@
                 jQuery('#populateMongoDB').click(function(evt) {
                     evt.preventDefault();
 
+                    var $a = $(this);
+
                     jQuery.ajax(
                             {
                                 url : '/mongodb',
                                 type : 'POST',
                                 contentType : 'application/json',
                                 dataType : 'json',
-                                processData : false
+                                processData : false,
+                                beforeSend : function(){
+                                    jQuery("#imgLoader").show();
+                                    $a.attr("disabled", true);
+                                }
                             }
                     )
                           .done(function (data){
@@ -96,6 +110,10 @@
                                 jQuery("pre#ok").hide();
                                 jQuery("pre#ko").show();
                                 jQuery("pre#ko").css({'text-align':'center', 'color':'red'}).html(jqXHR.responseJSON.error);
+                          })
+                          .always(function(){
+                                jQuery("#imgLoader").hide();
+                                $a.removeAttr("disabled");
                           })
                     ;
 
