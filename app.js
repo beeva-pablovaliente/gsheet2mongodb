@@ -134,7 +134,7 @@ app.route('/mongodb').post(function(req, res){
 	    //use speadsheet!
 	    if (err) {
             console.error(err);
-            resRoute.send(err);
+            return resRoute.status(500).send({error: 'Google SpreadSheet:' + err});
         }
         else {
             //console.dir(spreadsheet.raw);
@@ -142,7 +142,7 @@ app.route('/mongodb').post(function(req, res){
             spreadsheet.receive(function (err, rows, info) {
                 if (err) {
                     console.error(err);
-                    resRoute.send(err);
+                    return resRoute.status(500).send({error: 'Google SpreadSheet:' + err});
                 }
 
                 //console.dir(rows);
@@ -152,7 +152,7 @@ app.route('/mongodb').post(function(req, res){
 
                     if (err) {
                         console.error(err);
-                        resRoute.send(err);
+                        return resRoute.status(500).send({error: 'MongoDB Client:' + err.message});
                     }
 
                     //Calculate the number of rows returned: The first row will have the name of the columns
@@ -194,7 +194,7 @@ app.route('/mongodb').post(function(req, res){
                             if (countCloseDb == 0) {
                                 db.close();
 
-                                resRoute.send(docs);
+                                return resRoute.send(docs);
                             }
                         });
                     }
