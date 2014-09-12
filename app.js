@@ -35,7 +35,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname + '/public')));
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
+app.use( bodyParser.urlencoded({extended : true}) ); // to support URL-encoded bodies
 
 // To disable Swig's cache, do the following:
 app.set('view cache', false);
@@ -129,7 +129,7 @@ app.route('/mongodb').post(function(req, res){
 	      type: 'Bearer',
 	      token: req.session.oauth ? req.session.oauth.token : ""
 	    }
-	}, 
+	},
 	function sheetReady(err, spreadsheet) {
 	    //use speadsheet!
 	    if (err) {
