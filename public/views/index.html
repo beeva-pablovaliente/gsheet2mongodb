@@ -95,7 +95,9 @@
                             }
                     )
                           .done(function (data){
-                            console.log(data);
+                                console.log(data);
+                                //var $pre = jQuery("<pre>").css('text-align','left').html(JSON.stringify(data, undefined, 2));
+                                //jQuery('.mastfoot').find('.inner').append($pre);
                           })
                           .fail(function( jqXHR, textStatus, errorThrown ) {
                             console.log("ERROR");
