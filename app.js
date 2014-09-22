@@ -216,6 +216,18 @@ app.route('/mongodb').post(function(req, res){
 	});
 });
 
+//var access = fs.createWriteStream(__dirname + '/node.access.log', { flags: 'a' });
+
+//Redirects the standard output
+process.stdout.write = (function(write) {
+    return function(string, encoding, fd) {
+        //write.apply(process.stdout, arguments); //Sends the output to the standard stdout
+        //write.apply(access, arguments); //Sends the output to the standard stdout
+
+        //Currently this code causes the standard output be muted
+    }
+})(process.stdout.write);
+
 //Start Express Server
 var server = http.createServer(app);
 server.listen(port, function(){
